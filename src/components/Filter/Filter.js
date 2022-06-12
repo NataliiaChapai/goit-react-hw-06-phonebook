@@ -1,8 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import s from './Filter.module.css';
+import { filter, getFilter} from '../../redux/contactsSlice'
 
-export default function Filter({ name, onFilterInput }) {
+export default function Filter() {
+  const {name} = useSelector(getFilter);
+  const dispatch = useDispatch();
+  
+  const onFilterInput = event => {
+    dispatch(filter(event.target.value));
+  }
   return (
     <label className={s.label}>
       Find contacts by name
@@ -16,8 +23,3 @@ export default function Filter({ name, onFilterInput }) {
     </label>
   );
 }
-
-Filter.propTypes = {
-  name: PropTypes.string,
-  onFilterInput: PropTypes.func.isRequired,
-};

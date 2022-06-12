@@ -1,9 +1,22 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { remove, getContacts, getFilter } from '../../redux/contactsSlice';
 import s from './ContactList.module.css';
 import ContactItem from './ContactItem/ContactItem';
 
-export default function ContactList({ formData, onDeleteBtnClick }) {
+export default function ContactList() {
+  const contacts = useSelector(getContacts);
+  const filterContact = useSelector(getFilter);
+  const dispatch = useDispatch();
+
+  const onDeleteBtnClick = (contactId) => {
+    dispatch(remove(contactId));
+  }
+  
+  const formData = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filterContact.toLocaleLowerCase())
+  );
+  
   return (
     <ul className={s.list}>
       {formData.map(({ id, name, number }) => (
@@ -18,14 +31,3 @@ export default function ContactList({ formData, onDeleteBtnClick }) {
     </ul>
   );
 }
-
-ContactList.propTypes = {
-  formData: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  onDeleteBtnClick: PropTypes.func.isRequired,
-};
